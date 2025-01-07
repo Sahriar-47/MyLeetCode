@@ -1,0 +1,39 @@
+class MinStack {
+public:
+    MinStack() {
+        cur = new Node(0,INT_MAX,NULL);
+    }
+    
+    void push(int x) {
+        if(cur == nullptr)
+        cur = new Node(x,x,nullptr);
+        else
+        cur = new Node(x,min(x,cur->min),cur);
+    }
+    
+    void pop() {
+        cur = cur->next;
+    }
+    
+    int top() {
+        return cur->val;
+    }
+    
+    int getMin() {
+        return cur->min;
+    }
+
+    class Node {
+    public:
+    int val;
+    int min;
+    Node* next;
+
+    Node(int val,int min, Node* next){
+        this->val = val;
+        this->min = min;
+        this->next = next;
+    }
+};
+Node* cur;
+};
