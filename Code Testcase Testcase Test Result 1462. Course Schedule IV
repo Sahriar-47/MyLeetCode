@@ -1,0 +1,30 @@
+class Solution {
+public:
+
+    void dfs(int start, vector<bool>&vis, vector<vector<int>>&adj){
+    vis[start] = true;
+    //cout<<vertex<<" ";
+    for(auto &child: adj[start]){
+        if(!vis[child])
+        dfs(child, vis, adj);
+    }
+}
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+
+        vector<bool>ans;
+        vector<vector<int>>adj(numCourses);
+        for(auto &edge: prerequisites){
+            adj[edge[0]].push_back(edge[1]);
+        }
+
+        for(auto &q: queries){
+            vector<bool>vis(numCourses,false);
+            dfs(q[0], vis, adj);
+            if(vis[q[1]])
+            ans.push_back(true);
+            else
+            ans.push_back(false);
+        }
+        return ans;
+    }
+};
