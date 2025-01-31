@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<string> wordSubsets(vector<string>& words1, vector<string>& words2) {
+        vector<string>ans;
+        
+        vector<int>charfreq;
+        vector<int>maxfreq(26,0);
+
+        for(auto &st: words2){
+            vector<int>charfreq(26,0);
+            for(auto &ch: st){
+                charfreq[ch-'a']++;
+            }
+            for(int i=0; i<26; i++){
+                maxfreq[i] = max(maxfreq[i],charfreq[i]);
+            }
+        }
+
+        for(auto &st: words1){
+            bool isok = true;
+            vector<int>charfreq(26,0);
+            for(auto &ch: st){
+                charfreq[ch-'a']++;
+            }
+            for(int i=0; i<26; i++){
+                if(charfreq[i] < maxfreq[i]){
+                    isok = false;
+                    break;
+                }
+            }
+            if(isok){
+                ans.push_back(st);
+            }
+        }
+        return ans;
+    }
+};
