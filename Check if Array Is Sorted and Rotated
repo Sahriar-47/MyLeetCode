@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        nums.push_back(102);
+        bool ok = true;
+        int mn = 105;
+        int mx = 0;
+        for(int i=0; i<nums.size()-2; i++){
+            mn = min(mn,nums[i]);
+            if(nums[i] > nums[i+1]){
+                for(int j = i+1; j<nums.size()-1; j++){
+                    if(nums[j] > nums[j+1])
+                    return false;
+                    mx = max(mx,nums[j]);
+                }
+                break;
+            }
+        }
+        if(mn >= mx){
+            return true;
+        }
+        else
+        return false;
+
+    }
+};
