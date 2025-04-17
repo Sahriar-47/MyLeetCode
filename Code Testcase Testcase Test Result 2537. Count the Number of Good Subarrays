@@ -1,0 +1,23 @@
+class Solution {
+public:
+    long long countGood(vector<int>& nums, int k) {
+        int n = nums.size();
+        unordered_map<int,int>count;
+        long long res = 0;
+        int pairs = 0;
+        int j = 0;
+        int i = 0;
+        while(i<n){
+            pairs += count[nums[i]];
+            count[nums[i]]++;
+            while(pairs >= k){
+                res += (n-i);
+                count[nums[j]]--;
+                pairs -= count[nums[j]];
+                j++;
+            }
+            i++;
+        }
+        return res;
+    }
+};
