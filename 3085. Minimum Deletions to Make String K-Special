@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int minimumDeletions(string word, int k) {
+        int n = word.size();
+        map<char, long long>m;
+        vector<long long>st;
+        for(auto &i: word){
+            m[i]++;
+        }
+
+        long long ans = 1e15;
+        for(auto &i: m){
+            long long del = 0;
+            for(auto &j: m){
+                if(i.second > j.second){
+                    del += j.second;
+                }
+                else if(j.second > i.second+k){
+                    del += j.second - (i.second+k);
+                }
+            }
+            ans = min(ans, del);
+        }
+        return ans;
+    }
+};
