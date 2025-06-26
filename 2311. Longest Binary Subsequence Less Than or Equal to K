@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int longestSubsequence(string s, int k) {
+        int n = s.size();
+        int noOfBits = 32 - __builtin_clz(k);
+
+        int ans = 0;
+        for (int i = 0; i < n - noOfBits; i++) {
+            if (s[i] == '0') ans++;
+        }
+
+        int cnt = 0;
+        int val = 0;
+        int bit = 0;
+        for (int i = n - 1; i >= max(0, n - noOfBits); i--) {
+            if (s[i] == '0') {
+                cnt++;
+            }
+            else {
+                if ((1 << bit) + val <= k) {
+                    val += (1 << bit);
+                    cnt++;
+                }
+            }
+            bit++;
+        }
+        return ans + cnt;
+    }
+};
