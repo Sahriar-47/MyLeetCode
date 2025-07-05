@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int findLucky(vector<int>& arr) {
+        int n = arr.size();
+        map<int, int>m;
+        for(auto &i: arr) {
+            m[i]++;
+        }
+
+        int lucky = -1;
+        for(auto &val: m) {
+            if(val.first == val.second) {
+                lucky = val.first;
+            }
+        }
+        return lucky;
+    }
+};
