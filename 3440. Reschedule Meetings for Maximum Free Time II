@@ -1,0 +1,75 @@
+class Solution {
+public:
+    int maxFreeTime(int eventTime, vector<int>& startTime, vector<int>& endTime) {
+        int n = startTime.size();
+
+        vector<int> pre_max(n), suf_max(n);
+        pre_max[0] = startTime[0];
+        for(int i=1; i<n; i++) {
+            pre_max[i] = max(pre_max[i-1], (startTime[i]-endTime[i-1]));
+        }
+        suf_max[n-1] = eventTime-endTime[n-1];
+        for(int i=n-2; i>=0; i--) {
+            suf_max[i] = max(suf_max[i+1], (startTime[i+1]-endTime[i]));
+        }
+
+        int beg, end, ans = 0;
+        for(int i=0; i<n; i++) {
+            if(i == 0) {
+                beg = 0;
+            }
+            else {
+                beg = endTime[i-1];
+            }
+            if(i == n-1) {
+                end = eventTime;
+            }
+            else {
+                end = startTime[i+1];
+            }
+
+            if(i == 0) {
+                ans = max(ans, (end-beg - (endTime[i]-startTime[i])));
+            }
+            else {
+                if(pre_max[i-1] >= (endTime[i] - startTime[i])) {
+                    ans = max(ans, (end-beg));
+                }
+                else {
+                    ans = max(ans, (end-beg-(endTime[i]-startTime[i])));
+                }
+            }
+        }
+
+
+        int left, right, res = 0;
+        for(int i=n-1; i>=0; i--) {
+            if(i == n-1) {
+                right = eventTime;
+            }
+            else {
+                right = startTime[i+1];
+            }
+            if(i == 0) {
+                left = 0;
+            }
+            else {
+                left = endTime[i-1];
+            }
+
+            if(i == n-1) {
+                res = max(res, right-left-(endTime[i]-startTime[i]));
+            }
+            else {
+                if(suf_max[i+1] >= (endTime[i] - startTime[i])) {
+                    res = max(res, (right-left));
+                }
+                else {
+                    res = max(res, (right-left-(endTime[i]-startTime[i])));
+                }
+            }
+        }
+
+        return max(ans, res);
+    }
+};
