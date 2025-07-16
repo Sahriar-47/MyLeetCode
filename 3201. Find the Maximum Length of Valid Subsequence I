@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int maximumLength(vector<int>& nums) {
+        int n = nums.size();
+        int even = 0, evodd = 1, odd = 0;
+        bool ok = false;
+        if(nums[0]%2 == 0) {
+            ok = true;
+            even++;
+        }
+        else {
+            odd++;
+        }
+
+        for(int i=1; i<n; i++) {
+            if(ok && (nums[i]%2 == 1)) {
+                evodd++;
+                ok = false;
+            }
+            else if(!ok && (nums[i]%2 == 0)) {
+                evodd++;
+                ok = true;
+            }
+
+            if(nums[i]%2 == 0) {
+                even++;
+            }
+            else {
+                odd++;
+            }
+        }
+
+        if(even == n || odd == n) {
+            return n;
+        }
+        else
+        return max(even, max(odd, evodd));
+    }
+};
