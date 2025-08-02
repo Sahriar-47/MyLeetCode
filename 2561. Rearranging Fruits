@@ -1,0 +1,63 @@
+class Solution {
+public:
+    long long minCost(vector<int>& basket1, vector<int>& basket2) {
+        map<int, int>mp, mp1;
+        map<int, int, greater<int>>mp2;
+        for(auto &x: basket1) {
+            mp[x]++;
+            mp1[x]++;
+        }
+        for(auto &x: basket2) {
+            mp[x]++;
+            mp2[x]++;
+        }
+
+        for(auto &x: mp) {
+            if(x.second%2 == 1) {
+                return -1;
+            }
+        }
+
+        sort(basket1.begin(), basket1.end());
+        sort(basket2.begin(), basket2.end());
+        int mn = min(basket1[0], basket2[0]);
+
+        long long ans = 0;
+        int j = basket2.size()-1;
+        int i = 0;
+        while(i < basket1.size() && j >= 0) {
+            int half1 = mp[basket1[i]]/2;
+            int half2 = mp[basket2[j]]/2;
+            if(half1 != mp1[basket1[i]] && half2 != mp2[basket2[j]] && mp1[basket1[i]] > half1 && mp2[basket2[j]] > half2) {
+                int rmv1 = mp1[basket1[i]] - half1;
+                int rmv2 = mp2[basket2[j]] - half2;
+                //int rmv = min(rmv1, rmv2);
+                //mp[basket1[i]] -= rmv;
+                //mp[basket2[j]] -= rmv;
+                mp1[basket1[i]] --;
+                mp2[basket2[j]] --;
+                mp1[basket2[j]] ++;
+                mp2[basket1[i]] ++;
+
+                if(min(basket1[i], basket2[j]) <= 2*mn) {
+                    ans += (min(basket1[i], basket2[j]));
+                }
+                else
+                    ans += (2*mn);
+
+                i++;
+                j--;
+            }
+            else {
+                if(mp1[basket1[i]] <= half1) {
+                    i++;
+                }
+                if(mp2[basket2[j]] <= half2) {
+                    j--;
+                }
+            }
+        }
+
+        return ans;
+    }
+};
