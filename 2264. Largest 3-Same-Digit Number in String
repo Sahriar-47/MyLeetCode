@@ -1,0 +1,25 @@
+class Solution {
+public:
+    string largestGoodInteger(string num) {
+        int cnt = 1;
+        int r = 0;
+        bool ok = false;
+        for(int i=1; i<num.size(); i++) {
+            if(num[i] == num[i-1]) {
+                cnt++;
+                if(cnt == 3) {
+                    r = max(r, num[i]-'0');
+                    ok = true;
+                }
+            }
+            else
+            cnt = 1;
+        }
+        string ch = to_string(r);
+
+        if(ok)
+        return ch+ch+ch;
+        else
+        return "";
+    }
+};
