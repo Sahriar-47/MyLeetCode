@@ -1,0 +1,32 @@
+class Solution {
+public:
+    long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
+        int n = prices.size();
+        
+        vector<int> prices2(n+1, 0), strategy2(n+1, 0);
+        for (int i = 1; i <= n; i++) prices2[i] = prices[i-1];
+        for (int i = 1; i <= n; i++) strategy2[i] = strategy[i-1];
+
+        vector<long long> preSum(n+1, 0), preSum2(n+1, 0);
+        for (int i = 1; i <= n; i++) {
+            preSum[i]  = preSum[i-1] + prices2[i];
+            preSum2[i] = preSum2[i-1] + 1LL * prices2[i] * strategy2[i];
+        }
+        
+        long long maxAns = 0;
+        for (int i = 1; i <= n; i++) {
+            maxAns += 1LL * prices2[i] * strategy2[i];
+        }
+        
+        for (int i = 1; i <= n-k+1; i++) {
+            int l = i + (k/2) - 1;
+            int r = i + k - 1;
+            long long candidate = (preSum[r] - preSum[l]) 
+                                + (preSum2[n] - preSum2[r]) 
+                                + (preSum2[i-1] - preSum2[0]);
+            maxAns = max(maxAns, candidate);
+        }
+
+        return maxAns;
+    }
+};
