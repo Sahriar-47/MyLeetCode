@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int areaOfMaxDiagonal(vector<vector<int>>& dimensions) {
+        int n = dimensions.size();
+
+        vector<pair<double, int>>vp;
+        for(int i=0; i<n; i++) {
+            double diag = sqrt(dimensions[i][0]*dimensions[i][0] + dimensions[i][1]*dimensions[i][1]);
+            int area = dimensions[i][0]*dimensions[i][1];
+
+            vp.push_back({diag, area});
+        }
+        
+        sort(vp.begin(), vp.end(), [](auto &a, auto&b) {
+            if(a.first == b.first)
+                return a.second > b.second;
+            return a.first > b.first;
+        });
+
+        return vp[0].second;
+    }
+};
