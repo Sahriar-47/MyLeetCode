@@ -1,0 +1,35 @@
+class Solution {
+public:
+    long long flowerGame(int n, int m) {
+        long long ans = 0;
+        int l = 1;
+        int mn = min(n, m);
+        while(l < min(n, m)) {
+            int total = mn-l+1;
+            int evens = (mn/2) - (l-1)/2;
+            int odds = total - evens;
+
+            if(l%2 == 1) {
+                ans += (2*evens);
+            }
+            else {
+                ans += (2*odds);
+            }
+            l++;
+        }
+
+        int total = mn;
+        int evens = (mn/2);
+        int odds = total - evens;
+        for(int i=mn+1; i<=max(n, m); i++) {
+            if(i%2 == 0) {
+                ans += odds;
+            }
+            else {
+                ans += evens;
+            }
+        }
+
+        return ans;
+    }
+};
