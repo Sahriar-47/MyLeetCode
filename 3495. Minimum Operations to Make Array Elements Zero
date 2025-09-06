@@ -1,0 +1,27 @@
+class Solution {
+    using ll = long long;
+public:
+
+    ll NumOfOperation(int num) {
+        ll low = 1;
+        int i = 1;
+        ll operation = 0;
+
+        while (low <= num) {
+            ll high = (1LL << (2*i)) - 1;
+            ll end = min(num*1LL, high);
+            operation += (end - low + 1) * i;
+            low = high + 1;
+            i++;
+        }
+        return operation;
+    }
+    long long minOperations(vector<vector<int>>& queries) {
+        int n = queries.size();
+        ll ans = 0;
+        for(auto &x: queries) {
+            ans += (NumOfOperation(x[1]) - NumOfOperation(x[0]-1) + 1)/2;
+        }
+        return ans;
+    }
+};
