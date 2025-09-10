@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+        int len = languages.size();
+        int len2 = friendships.size();
+        // vector<pair<int, unordered_set<int>>>vp;
+        // for(int i=1; i<=len; i++) {
+        //     vp.push_back({i, languages[i-1]});
+        // }
+
+        unordered_set<int>st;
+        for(auto &idx: friendships) {
+            unordered_map<int, int>mp;
+            bool ok = false;
+            for(auto &val: languages[idx[0] - 1]) {
+                mp[val] = 1;
+            }
+            for(auto &val: languages[idx[1]-1]) {
+                if(mp[val]) {
+                    ok = true;
+                    break;
+                }
+            }
+            if(!ok) {
+                st.insert(idx[0]);
+                st.insert(idx[1]);
+            }
+        }
+        map<int, int>mp;
+        for(int i=0; i<len; i++) {
+            if(st.count(i+1)) {
+                for(int j=0; j<languages[i].size(); j++) {
+                    mp[languages[i][j]]++;
+                }
+            }
+        }
+
+        int maxFreq = 0;
+        for (auto &p : mp) {
+            maxFreq = max(maxFreq, p.second);
+        }
+
+        return st.size()-maxFreq;
+    }
+};
