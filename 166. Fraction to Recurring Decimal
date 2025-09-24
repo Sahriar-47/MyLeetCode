@@ -1,0 +1,34 @@
+class Solution {
+    using ll = long long;
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        string ans ="";
+        if(numerator == 0) return "0";
+        if(numerator < 0 && denominator > 0 || numerator > 0 && denominator < 0) {
+            ans += "-";
+        }
+        ll numer = llabs((ll) numerator);
+        ll den = llabs((ll) denominator);
+        ll integerPart = numer / den;
+        ans += to_string(integerPart);
+
+        ll remainder = numer%den;
+        if(remainder == 0) return ans;
+
+        ans += ".";
+        unordered_map<ll, int> mp;
+        while(remainder != 0) {
+            if(mp.count(remainder)) {
+                int pos = mp[remainder];
+                ans.insert(pos, "(");
+                ans.append(")");
+                break;
+            }
+            mp[remainder] = ans.size();
+            remainder *= 10;
+            ans += to_string(remainder/den);
+            remainder %= den;
+        }
+        return ans;
+    }
+};
