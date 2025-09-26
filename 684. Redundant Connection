@@ -1,0 +1,43 @@
+class Solution {
+public:
+    bool bfsHasCycle(int src, vector<vector<int>>adj, vector<int>&vis) {
+        queue<pair<int, int>> q;
+        q.push({src, -1});
+        vis[src] = 1;
+
+        while(!q.empty()) {
+            int node = q.front().first;
+            int parent = q.front().second;
+            q.pop();
+
+            for(int adjNode: adj[node]) {
+                if(!vis[adjNode]) {
+                    vis[adjNode] = 1;
+                    q.push({adjNode, node});
+                } 
+                else if(adjNode != parent) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+
+        vector<vector<int>> adj(n+1);
+        //vector<int>vis(n+1, 0);
+        for(auto edge: edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+
+            vector<int>vis(n+1, 0);
+            if(bfsHasCycle(u, adj, vis)) {
+                return edge;
+            } 
+        }
+        return {};
+    }
+};
