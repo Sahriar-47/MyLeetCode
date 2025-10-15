@@ -1,0 +1,67 @@
+// User function Template for C++
+
+class Solution {
+  bool isValid(int n, int m, int row, int col) {
+      if(row>=0 && row<n && col>=0 && col<m)
+      return true;
+      return false;
+  }
+  
+  private:
+    void bfs(int r, int c, vector<vector<int>>&vis, vector<vector<int>>&grid,
+    set<vector<pair<int, int>>> &st) {
+        int n = grid.size(); 
+        int m = grid[0].size();
+        queue<pair<pair<int, int>, int>> q;
+        q.push({{r, c}, grid[r][c]});
+        vis[r][c] = 1;
+        vector<pair<int, int>> vp;
+        vp.push_back({0, 0});
+        
+        int dx[] = {0, 0, -1, 1};
+        int dy[] = {1, -1, 0, 0};
+        
+        while(!q.empty()) {
+            int row = q.front().first.first;
+            int col = q.front().first.second;
+            q.pop();
+            
+            for(int i=0; i<4; i++) {
+                int nrow = row + dx[i];
+                int ncol = col + dy[i];
+                if(isValid(n, m, nrow, ncol) && !vis[nrow][ncol]
+                && grid[nrow][ncol] == 1) {
+                    vis[nrow][ncol] = 1;
+                    q.push({{nrow, ncol}, grid[nrow][ncol]});
+                    
+                    int row_dif = nrow - r;
+                    int col_dif = ncol - c;
+                    vp.push_back({row_dif, col_dif});
+                }
+            }
+        }
+        sort(vp.begin(), vp.end());
+        st.insert(vp);
+        vp.clear();
+    }
+    
+  public:
+    int countDistinctIslands(vector<vector<int>>& grid) {
+        // code here
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        set<vector<pair<int, int>>> st;
+        vector<vector<int>>vis(n, vector<int>(m, 0));
+        
+        for(int row=0; row<n; row++) {
+            for (int col=0; col<m; col++) {
+                if(grid[row][col] == 1 && !vis[row][col]) {
+                    bfs(row, col, vis, grid, st);
+                }
+            }
+        }
+        
+        return st.size();
+    }
+};
