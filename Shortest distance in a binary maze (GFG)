@@ -1,0 +1,66 @@
+// User function Template for Java
+class Edge {
+    int weight;
+    int row;
+    int col;
+    Edge(int weight, int row, int col) {
+        this.weight = weight;
+        this.row = row;
+        this.col = col;
+    }
+}
+
+class Solution {
+    boolean isValid(int n, int m, int row, int col) {
+        if(row>=0 && row<n && col>=0 && col<m)
+        return true;
+        else
+        return false;
+    }
+    
+    int shortestPath(int[][] grid, int[] source, int[] destination) {
+        // Your code here
+        int n = grid.length;
+        int m = grid[0].length;
+        
+        if(grid[source[0]][source[1]] == 0 || grid[destination[0]][destination[1]] == 0) {
+            return -1;
+        }
+        
+        int[] dx = {0, 0, -1, 1};
+        int[] dy = {-1, 1, 0, 0};
+        
+        int[][] dist = new int[n][m];
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                dist[i][j] = (int)(1e9);
+            }
+        }
+        dist[source[0]][source[1]] = 0;
+        
+        PriorityQueue<Edge> pq = new PriorityQueue<>((a, b)-> a.weight - b.weight);
+        pq.add(new Edge(0, source[0], source[1]));
+        
+        while(!pq.isEmpty()) {
+            int w = pq.peek().weight;
+            int r = pq.peek().row;
+            int c = pq.peek().col;
+            pq.remove();
+            
+            if(r == destination[0] && c == destination[1])
+            return w;
+            
+            for(int i=0; i<4; i++) {
+                int newR = r + dx[i];
+                int newC = c + dy[i];
+                if(isValid(n, m, newR, newC) && grid[newR][newC] == 1
+                && dist[r][c] + 1 < dist[newR][newC]) {
+                    dist[newR][newC] = dist[r][c] + 1;
+                    pq.add(new Edge(dist[r][c] + 1, newR, newC));
+                }
+            }
+            
+        }
+        return -1;
+    }
+}
