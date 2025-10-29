@@ -1,0 +1,56 @@
+class Pair {
+    int first;
+    int second;
+    Pair(int first, int second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+
+class Solution {
+    public int networkDelayTime(int[][] times, int n, int k) {
+        List<List<Pair>> adj = new ArrayList<>(n+1);
+        for(int i=0; i<=n; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for(int[] val: times) {
+            int u = val[0];
+            int v = val[1];
+            int w = val[2];
+            adj.get(u).add(new Pair(v, w));
+        }
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.first - b.first);
+        pq.add(new Pair(0, k));
+        
+        int[] dist = new int[n+1];
+        Arrays.fill(dist, (int)1e9);
+        dist[k] = 0;
+
+        while(!pq.isEmpty()) {
+            Pair cur = pq.poll();
+            int weight = cur.first;
+            int node = cur.second;
+           
+            for(Pair it: adj.get(node)) {
+                int child = it.first;
+                int w = it.second;
+
+                if(weight+w < dist[child]) {
+                    dist[child] = weight+w;
+                    pq.add(new Pair(dist[child], child));
+                }
+            }
+        }
+        
+        int max_val = 0;
+        for(int i=1; i<=n; i++) {
+            if(dist[i] == (int)1e9)
+                return -1;
+            else
+                max_val = Math.max(max_val, dist[i]);
+        }
+        return max_val;
+    }
+}
