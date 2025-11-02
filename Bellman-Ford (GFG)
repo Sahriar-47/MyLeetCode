@@ -1,0 +1,42 @@
+// User function Template for Java
+class Pair {
+    int node;
+    int dist;
+    Pair(int node, int dist) {
+        this.node = node;
+        this.dist = dist;
+    }
+}
+
+class Solution {
+    public int[] bellmanFord(int V, int[][] edges, int src) {
+        // code here
+        int[] dist = new int[V];
+        for(int i=0; i<V; i++) dist[i] = (int)1e8;
+        dist[src] = 0;
+        
+        for(int i=0; i<V; i++) {
+            for(int[] edge: edges) {
+                int u = edge[0];
+                int v = edge[1];
+                int wt = edge[2];
+                
+                if(dist[u] != (int)1e8 && dist[u] + wt < dist[v]) {
+                    dist[v] = dist[u] + wt;
+                }
+            }
+        }
+        for(int[] edge: edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int wt = edge[2];
+            
+            if(dist[u] != (int)1e8 && dist[u] + wt < dist[v]) {
+                int[] ans = new int[1];
+                ans[0] = -1;
+                return ans;
+            }
+        }
+        return dist;
+    }
+}
