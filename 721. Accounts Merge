@@ -1,0 +1,74 @@
+class DisjointSet {
+    List<Integer> size = new ArrayList<>();
+    List<Integer> parent = new ArrayList<>();
+    public DisjointSet(int n) {
+        for(int i=0; i<n; i++) {
+            size.add(1);
+            parent.add(i);
+        }
+    }
+
+    public int findUPar(int node) {
+        if(node == parent.get(node)) {
+            return node;
+        }
+        int ulp = findUPar(parent.get(node));
+        parent.set(node, ulp);
+        return parent.get(node);
+    }
+
+    public void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size.get(ulp_u) < size.get(ulp_v)) {
+            parent.set(ulp_u, ulp_v);
+            size.set(ulp_v, size.get(ulp_v) + size.get(ulp_u));
+        } else {
+            parent.set(ulp_v, ulp_u);
+            size.set(ulp_u, size.get(ulp_u) + size.get(ulp_v));
+        }
+    }
+}
+
+class Solution {
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        int len = accounts.size();
+        DisjointSet ds = new DisjointSet(len);
+
+        Map<String, Integer> emailsMap = new HashMap<>();
+        for(int i=0; i<len; i++) {
+            int m = accounts.get(i).size();
+
+            for(int j=1; j<m; j++) {
+                String e = accounts.get(i).get(j);
+                if(!emailsMap.containsKey(e)) {
+                    emailsMap.put(e, i);
+                } else {
+                    ds.unionBySize(i, emailsMap.get(e));
+                }
+            }
+        }
+
+        Map<Integer, List<String>> accountsMap = new HashMap<>();
+        for(String email: emailsMap.keySet()) {
+            int person = emailsMap.get(email);
+            int ulPerson = ds.findUPar(person);
+
+            if(!accountsMap.containsKey(ulPerson)) {
+                accountsMap.put(ulPerson, new ArrayList<>());
+            }
+            accountsMap.get(ulPerson).add(email);
+        }
+
+        List<List<String>> mergedAccounts = new ArrayList<>();
+        for(int person: accountsMap.keySet()) {
+            List<String> emails = accountsMap.get(person);
+            Collections.sort(emails);
+            emails.add(0, accounts.get(person).get(0));
+            mergedAccounts.add(emails);
+        }
+
+        return mergedAccounts;
+    }
+}
