@@ -1,0 +1,97 @@
+class DisjointSet {
+    int[] size;
+    int[] parent;
+    public DisjointSet(int n) {
+        size = new int[n];
+        parent = new int[n];
+        for(int i=0; i<n; i++) {
+            size[i] = 1;
+            parent[i] = i;
+        }
+    }
+
+    public int findUPar(int node) {
+        if(node == parent[node]) {
+            return node;
+        }
+        int ulp = findUPar(parent[node]);
+        parent[node] = ulp;
+        return parent[node];
+    }
+
+    public void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        } else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+}
+
+class Solution {
+    private boolean isValid(int n, int m, int row, int col) {
+        return (row>=0 && row<n && col>=0 && col<m);
+    }
+
+    public int largestIsland(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int[] dx = {0, 0, -1, 1};
+        int[] dy = {-1, 1, 0, 0};
+
+        DisjointSet ds = new DisjointSet(n*m);
+        for(int row=0; row<n; row++) {
+            for(int col=0; col<m; col++) {
+                int curNode = row*n + col;
+
+                if(grid[row][col] == 1) {
+                    for(int i=0; i<4; i++) {
+                        int newRow = row+dx[i];
+                        int newCol = col+dy[i];
+                        if(isValid(n, m, newRow, newCol) && grid[newRow][newCol] == 1) {
+                            int adjNode = newRow*n + newCol;
+                            ds.unionBySize(curNode, adjNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        int maxSize = 0;
+        boolean hasZero = false;
+        for(int row=0; row<n; row++) {
+            for(int col=0; col<m; col++) {
+                int curSize = 1;
+                Set<Integer> uniqueRoot = new HashSet<>();
+
+                if(grid[row][col] == 0) {
+                    hasZero = true;
+                    for(int i=0; i<4; i++) {
+                        int newRow = row+dx[i];
+                        int newCol = col+dy[i];
+                        if(isValid(n, m, newRow, newCol) && grid[newRow][newCol] == 1) {
+                            int node = n*newRow + newCol;
+                            int root = ds.findUPar(node);
+                            uniqueRoot.add(root);
+                        }
+                    }
+                    for(int root: uniqueRoot) {
+                        curSize += ds.size[root];
+                    }
+                }
+                uniqueRoot.clear();
+                maxSize = Math.max(maxSize, curSize);
+            }
+        }
+
+        if(!hasZero) return n*m;
+        
+        return maxSize;
+    }
+}
