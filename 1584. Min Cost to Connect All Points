@@ -1,0 +1,80 @@
+class DisjointSet {
+    List<Integer> rank = new ArrayList<>();
+    List<Integer> parent = new ArrayList<>();
+    public DisjointSet(int n) {
+        for(int i=0; i<n; i++) {
+            rank.add(0);
+            parent.add(i);
+        }
+    }
+
+    public int findUPar(int node) {
+        if(node == parent.get(node)) {
+            return node;
+        }
+        int ulp = findUPar(parent.get(node));
+        parent.set(node, ulp);
+        return parent.get(node);
+    }
+
+    public void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if(ulp_u == ulp_v) return;
+
+        if(rank.get(ulp_u) < rank.get(ulp_v)) {
+            parent.set(ulp_u, ulp_v);
+        } else if(rank.get(ulp_v) < rank.get(ulp_u)) {
+            parent.set(ulp_v, ulp_u);
+        } else {
+            parent.set(ulp_v, ulp_u);
+            rank.set(ulp_u, rank.get(ulp_u)+1);
+        }
+    }
+}
+
+class Touple {
+    int weight;
+    int node1;
+    int node2;
+    Touple(int weight, int node1, int node2) {
+        this.weight = weight;
+        this.node1 = node1;
+        this.node2 = node2;
+    }
+}
+
+class Solution {
+    public int manhatonDis(int[] a, int[] b) {
+        return Math.abs(a[0]-b[0]) + Math.abs(a[1]-b[1]);
+    }
+
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+
+        List<Touple> li = new ArrayList<>();
+        for(int i=0; i<n-1; i++) {
+            for(int j=i+1; j<n; j++) {
+                int dis = manhatonDis(points[i], points[j]);
+                li.add(new Touple(dis, i, j));
+            }
+        }
+
+        Collections.sort(li, (a, b)->a.weight-b.weight);
+
+        DisjointSet ds = new DisjointSet(n);
+        int ans = 0;
+        for(Touple val: li) {
+            int w = val.weight;
+            int u = val.node1;
+            int v = val.node2;
+            
+            if(ds.findUPar(u) != ds.findUPar(v)) {
+                ans += w;
+                ds.unionByRank(u, v);
+            }
+        }
+
+        return ans;
+    }
+}
